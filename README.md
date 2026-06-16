@@ -1,5 +1,5 @@
 - 👋 Hi, I’m @Jackson1272
-- 👀 I’m interested in computer sciencd
+- 👀 I’m interested in computer science
 - 🌱 I’m currently learning everything
 - 💞️ I’m looking to collaborate on everything 
 
