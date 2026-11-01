@@ -1,0 +1,81 @@
+# Command Center config. Copy to config.toml and edit.
+# Every section is optional — anything left blank is simply skipped.
+
+[server]
+host = "0.0.0.0"          # 0.0.0.0 = reachable over Tailscale. Use 127.0.0.1 for local-only.
+port = 8765
+# Passcode required to open the dashboard from another device (leave "" to disable).
+# Requests from this computer (127.0.0.1) never need it.
+passcode = "change-me"
+timezone = "America/New_York"
+
+[sync]
+# Times (24h, local) when the full sync runs automatically.
+times = ["06:00", "18:00"]
+# Re-index notes this often (minutes). Cheap: only changed files are re-read.
+notes_interval_minutes = 60
+
+[canvas]
+base_url = "https://canvas.vt.edu"
+# Best: Canvas → Account → Settings → "+ New Access Token". Paste it here.
+token = ""
+# Fallback (no token needed): Canvas → Calendar → "Calendar Feed" link (bottom right).
+ics_url = ""
+
+[google]
+# Path to the OAuth client JSON you download from Google Cloud Console (see README).
+client_secret_file = "google_client_secret.json"
+calendar_enabled = true
+gmail_enabled = true
+# Name of the calendar Command Center owns. It creates it if missing and only ever
+# writes/deletes events on THIS calendar — never your main one.
+calendar_name = "Command Center"
+# Gmail search used to find deadline-ish emails.
+gmail_query = "newer_than:3d (from:vt.edu OR from:gradescope.com OR from:webassign.net OR from:instructure.com OR from:piazza.com) -category:promotions"
+
+[planner]
+enabled = true
+# Window in which study blocks may be scheduled.
+day_start = "08:00"
+day_end = "22:00"
+block_minutes = 60
+# How many days ahead to plan.
+horizon_days = 5
+# Maximum study blocks to auto-create per day.
+max_blocks_per_day = 4
+# Default effort estimate (hours) when nothing better is known.
+default_effort_hours = 2.0
+
+[notes]
+# Folders to index. Map each to a course code if the folder is one course,
+# or leave course blank and Command Center will guess from folder names.
+# Windows paths: use forward slashes or doubled backslashes.
+[[notes.folders]]
+path = "C:/Users/Jackson/School"
+course = ""
+
+[[notes.folders]]
+path = "G:/My Drive/School"
+course = ""
+
+# [[notes.folders]]
+# path = "C:/Users/Jackson/OneDrive/Notes"
+# course = ""
+
+[notes.options]
+extensions = [".md", ".txt", ".pdf", ".docx", ".tex", ".py", ".m"]
+max_file_mb = 40
+ignore = ["node_modules", ".git", "__pycache__", ".obsidian", "$RECYCLE.BIN"]
+
+[ai]
+# Any OpenAI-compatible server: Ollama (default), LM Studio, llama.cpp, vLLM...
+base_url = "http://localhost:11434/v1"
+model = "llama3.1:8b"
+api_key = ""            # Ollama ignores this; LM Studio etc. may need one.
+enabled = true
+timeout_seconds = 120
+
+[courses]
+# Optional: friendly names / colors keyed by course code. Codes are auto-detected
+# from Canvas (e.g. "MATH 2214") — add overrides here if you like.
+# "MATH 2214" = { name = "Diff Eq", color = "#e5751f" }

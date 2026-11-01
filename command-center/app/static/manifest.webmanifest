@@ -1,0 +1,9 @@
+{
+  "name": "Command Center",
+  "short_name": "Command",
+  "start_url": "/#today",
+  "display": "standalone",
+  "background_color": "#121110",
+  "theme_color": "#861f41",
+  "icons": [{ "src": "/static/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

@@ -1,0 +1,7 @@
+.venv/
+data/
+config.toml
+google_client_secret.json
+__pycache__/
+*.pyc
+.pytest_cache/

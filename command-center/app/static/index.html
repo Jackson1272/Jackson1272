@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#861f41">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Command Center</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/static/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/static/icon.svg">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="top">
+    <h1 id="title">Command Center</h1>
+    <div class="sync">
+      <span id="last-sync">—</span>
+      <button class="icon-btn" id="sync-btn" title="Sync now" aria-label="Sync now">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 0 1-15.5 6.2M3 12A9 9 0 0 1 18.5 5.8"/><path d="M21 4v5h-5M3 20v-5h5"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- TODAY -->
+    <section class="view active" id="view-today">
+      <div class="hello"><h2 id="greeting">Hi Jackson</h2><p id="date-line"></p></div>
+      <div class="stats" id="stats"></div>
+      <div class="grid-2">
+        <div>
+          <div class="card" id="card-next"><h2>Next up</h2><ul class="list" id="next-list"></ul></div>
+          <div class="card" id="card-risk" hidden><h2>At risk <span class="muted" style="text-transform:none;letter-spacing:0;font-weight:400">— not enough time planned before the deadline</span></h2><ul class="list" id="risk-list"></ul></div>
+          <div class="card"><h2>Capture <span class="spacer"></span></h2>
+            <form class="capture" id="capture-form"><input class="input" id="capture-input" placeholder="Quick note, todo, or idea…" autocomplete="off"><button class="btn">Add</button></form>
+            <ul class="list" id="inbox-list" style="margin-top:8px"></ul>
+          </div>
+        </div>
+        <div>
+          <div class="card agenda"><h2>Today</h2><div id="agenda"></div></div>
+          <div class="card" id="card-drill-mini"><h2>Drill <span class="spacer"></span><a href="#drill">Start →</a></h2><div id="drill-mini"></div></div>
+          <div class="card mail" id="card-mail" hidden><h2>From your professors</h2><ul class="list" id="mail-list"></ul></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DEADLINES -->
+    <section class="view" id="view-deadlines">
+      <div class="seg" id="course-filter"></div>
+      <div class="form-row" style="margin-bottom:8px">
+        <button class="btn small" id="add-item-btn" style="flex:0 0 auto">+ Add deadline</button>
+        <span class="spacer" style="flex:1 1 auto"></span>
+        <div class="seg" id="status-filter" style="margin:0;flex:0 0 auto">
+          <button data-status="open" class="active">Open</button><button data-status="done">Done</button><button data-status="dismissed">Hidden</button>
+        </div>
+      </div>
+      <div id="deadline-groups"></div>
+      <div class="card" style="margin-top:16px"><h2>Next 7 days</h2><div id="week" class="agenda"></div></div>
+    </section>
+
+    <!-- DRILL -->
+    <section class="view" id="view-drill">
+      <div id="drill-session"></div>
+      <div class="card" style="margin-top:16px">
+        <h2>Log a struggle</h2>
+        <form id="topic-form">
+          <div class="form-row" style="margin-bottom:8px">
+            <input class="input" name="name" placeholder="Topic — e.g. Laplace with step functions" required>
+            <select class="input course-select" name="course"></select>
+          </div>
+          <div class="form-row" style="margin-bottom:8px">
+            <input class="input" name="notes" placeholder="What went wrong? (optional)">
+            <input class="input" name="exam_date" type="date" title="Exam date (optional)">
+          </div>
+          <button class="btn">Add to drill</button>
+        </form>
+      </div>
+      <div class="card"><h2>All weak topics <span class="count" id="topic-count"></span></h2><ul class="list" id="topic-list"></ul></div>
+    </section>
+
+    <!-- BRAIN -->
+    <section class="view" id="view-brain">
+      <div class="card">
+        <form id="search-form" class="capture">
+          <input class="input" id="search-input" placeholder="Search notes or ask a question…" autocomplete="off">
+          <select class="input course-select" id="search-course" style="flex:0 0 130px"></select>
+        </form>
+        <div class="form-row" style="margin-top:8px">
+          <button class="btn secondary small" id="search-btn" style="flex:0 0 auto">Search</button>
+          <button class="btn small" id="ask-btn" style="flex:0 0 auto">Ask my notes</button>
+          <span class="muted" id="ai-status" style="font-size:12px;align-self:center"></span>
+        </div>
+      </div>
+      <div class="card" id="answer-card" hidden><h2>Answer</h2><div class="answer" id="answer"></div><div class="sources" id="answer-sources"></div></div>
+      <div class="card" id="results-card" hidden><h2>Matches <span class="count" id="result-count"></span></h2><div id="results"></div></div>
+      <div class="card" id="recent-card"><h2>Recently changed <span class="spacer"></span><span class="muted" id="doc-stats" style="text-transform:none;letter-spacing:0;font-weight:400"></span></h2><div id="recent"></div></div>
+    </section>
+
+    <!-- SYSTEM -->
+    <section class="view" id="view-system">
+      <div class="card"><h2>Sync status</h2><table class="status" id="sync-table"></table>
+        <div class="form-row" style="margin-top:12px">
+          <button class="btn small" data-sync="">Sync everything</button>
+          <button class="btn secondary small" data-sync="canvas">Canvas</button>
+          <button class="btn secondary small" data-sync="gmail">Gmail</button>
+          <button class="btn secondary small" data-sync="plan">Re-plan</button>
+          <button class="btn secondary small" data-sync="notes">Re-index notes</button>
+        </div>
+      </div>
+      <div class="card"><h2>Connections</h2><table class="status" id="config-table"></table></div>
+      <div class="card"><h2>Courses</h2><ul class="list" id="course-list"></ul></div>
+      <div class="card"><h2>For Claude skills</h2>
+        <p class="muted" style="margin-top:0">Your morning brief, tutor and solver skills can read and write here:</p>
+        <pre class="doc-text" style="max-height:none">GET  /api/brief                 plain-text daily brief
+GET  /api/today                 everything on the Today tab (JSON)
+POST /api/drill/topics          {"name", "course", "notes", "source": "tutor", "cards": [{"question","answer"}]}
+POST /api/items                 {"title", "course", "due": "2026-11-05T23:59", "kind"}
+GET  /api/search?q=…            full-text search over your notes</pre>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabs" id="tabs">
+    <button data-view="today" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>Today</button>
+    <button data-view="deadlines"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 15l2 2 4-4"/></svg>Deadlines<span class="badge" id="badge-deadlines" hidden></span></button>
+    <button data-view="drill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2zM9 21h6"/></svg>Drill<span class="badge" id="badge-drill" hidden></span></button>
+    <button data-view="brain"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>Brain</button>
+    <button data-view="system"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>System</button>
+  </nav>
+
+  <dialog id="item-dialog">
+    <form method="dialog" id="item-form">
+      <h3 id="item-dialog-title">Add deadline</h3>
+      <input type="hidden" name="id">
+      <div class="form-row"><div><label class="lbl">Title</label><input class="input" name="title" required></div></div>
+      <div class="form-row">
+        <div><label class="lbl">Course</label><select class="input course-select" name="course"></select></div>
+        <div><label class="lbl">Type</label><select class="input" name="kind">
+          <option>assignment</option><option>exam</option><option>quiz</option><option>lab</option><option>project</option><option>reading</option><option>task</option></select></div>
+      </div>
+      <div class="form-row">
+        <div><label class="lbl">Due</label><input class="input" type="datetime-local" name="due"></div>
+        <div><label class="lbl">Effort (hours)</label><input class="input" type="number" step="0.5" min="0" name="effort_hours"></div>
+      </div>
+      <div class="form-row" style="margin-top:14px">
+        <button class="btn secondary" value="cancel" formnovalidate>Cancel</button>
+        <button class="btn" value="save">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="doc-dialog"><h3 id="doc-title"></h3><p class="muted" id="doc-path" style="font-size:12px;overflow-wrap:anywhere"></p>
+    <div class="doc-text" id="doc-text"></div>
+    <div class="form-row" style="margin-top:12px"><a class="btn secondary" id="doc-open" target="_blank" style="text-align:center">Open file</a><button class="btn" onclick="this.closest('dialog').close()">Close</button></div>
+  </dialog>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
